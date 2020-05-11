@@ -1,14 +1,14 @@
 # Union and Intersection of Two Linked List
 
 Input: two linked list A and B
-Output: one linked
+Output: one linked list
 
 Linked lists are used as input and output for this problem. A dictionary is created from the linked list A as an intermediate data structure for lookup constant time lookup. Keys are elements in A and values are how many of that element in A (frequency).
 
 ## Algorithm for Union: 
 1. Go through linked list A and generate dictionary (time complexity: O(n), space complexity: O(n))
-2. Set new_linkedlist = linked list A (time complexity: O(1), space complexity: O(1))
-3. Go through linked list B. If this element is in A, (time complexity: O(n), space complexity: O(n))
+2. Set new_linkedlist = linked list A
+3. Go through linked list B (time complexity: O(n)). If this element is in A,
     * subtract frequency of this element in dictionary by one
     * if frequency becomes zero, delete this key from dictionary 
    If this element is not in A,
@@ -17,8 +17,8 @@ Linked lists are used as input and output for this problem. A dictionary is crea
 
 ## Algorithm for Intersection: 
 1. Go through linked list A and generate dictionary (time complexity: O(n), space complexity: O(n))
-2. Set new_linkedlist = None (time complexity: O(1), space complexity: O(1))
-3. Go through linked list B (time complexity: O(n), space complexity: O(n)). If this element is in A,
+2. Set new_linkedlist = None
+3. Go through linked list B (time complexity: O(n). If this element is in A,
     * add this element to the new_linkedlist
     * subtract frequency of this element in dictionary by one
     * if frequency becomes zero, delete this key from dictionary 

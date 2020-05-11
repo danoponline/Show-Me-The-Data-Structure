@@ -1,9 +1,9 @@
 # Union and Intersection of Two Linked List
 
-Input: two linked list A and B
+Input: two linked list A and B </br>
 Output: one linked list
 
-Linked lists are used as input and output for this problem. A dictionary is created from the linked list A as an intermediate data structure for lookup constant time lookup. Keys are elements in A and values are how many of that element in A (frequency).
+Linked lists are used as input and output for this problem. A dictionary is created from the linked list A as an intermediate data structure for constant time lookup. Keys are elements in A and values are how many of that element in A (frequency).
 
 ## Algorithm for Union: 
 1. Go through linked list A and generate dictionary (time complexity: O(n), space complexity: O(n))

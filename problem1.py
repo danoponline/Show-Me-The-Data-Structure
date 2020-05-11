@@ -15,8 +15,14 @@ class LRU_Cache:
         self.tail = None
 
     def get(self, key):
-        # Retrieve item from provided key. Return -1 if nonexistent. 
-        pass
+        # Retrieve item from provided key. Return -1 if nonexistent (cache miss)
+        if key not in self.cache:
+            return -1
+        
+        # cache hit
+        cache_hit_node = self.cache[key]
+        self._move_to_tail(cache_hit_node)
+        return cache_hit_node.value
 
     def set(self, key, value):
         # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item. 
@@ -132,6 +138,11 @@ our_cache.set(4, 4)
 our_cache.set(4, 4)
 our_cache.set(2, 2)
 our_cache.set(5, 5)
+
+print("Return value from get: " + format(our_cache.get(3)))
+print("Return value from get: " + format(our_cache.get(5)))
+print("Return value from get: " + format(our_cache.get(1)))
+our_cache.set(0,0)
 print(our_cache.head.value)
 print(our_cache.head.next.value)
 print(our_cache.head.next.next.value)

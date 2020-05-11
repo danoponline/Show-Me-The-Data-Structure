@@ -139,7 +139,7 @@ class LRU_Cache:
 print("Unit Test Start!")
 print("-----------------------------------------------------------------------\n")
 
-print("Test 1: Print empty cache")
+print("Test 0: Print empty cache")
 our_cache = LRU_Cache(5)
 print("Expected Linked List: Nothing to print. Cache is empty!")
 print("Actual Linked List:", end=" ")
@@ -147,9 +147,17 @@ our_cache.print_cache()
 
 print("\n-----------------------------------------------------------------------\n")
 
+print("Test 1: Print None cache")
+our_cache.set(None, None)
+print("Expected Linked List: [Head: (None,None) :Tail]")
+print("Actual Linked List:", end=" ")
+our_cache.print_cache()
+
+print("\n-----------------------------------------------------------------------\n")
+
 print("Test 2: Set cache with (key=1,value=1) element")
 our_cache.set(1, 1)
-print("Expected Linked List: [Head: (1,1) :Tail]")
+print("Expected Linked List: [Head: (None,None)->(1,1) :Tail]")
 print("Actual Linked List:", end=" ")
 our_cache.print_cache()
 
@@ -157,7 +165,7 @@ print("\n-----------------------------------------------------------------------
 
 print("Test 3: Set cache with (key=2,value=2) element")
 our_cache.set(2, 2)
-print("Expected Linked List: [Head: (1,1)->(2,2) :Tail]")
+print("Expected Linked List: [Head: (None,None)->(1,1)->(2,2) :Tail]")
 print("Actual Linked List:", end=" ")
 our_cache.print_cache()
 
@@ -165,7 +173,7 @@ print("\n-----------------------------------------------------------------------
 
 print("Test 4: Set cache with (key=1,value=1) element (key already in cache)")
 our_cache.set(1, 1)
-print("Expected Linked List: [Head: (2,2)->(1,1) :Tail]")
+print("Expected Linked List: [Head: (None,None)->(2,2)->(1,1) :Tail]")
 print("Actual Linked List:", end=" ")
 our_cache.print_cache()
 
@@ -174,7 +182,7 @@ print("\n-----------------------------------------------------------------------
 print("Test 5: Get cache with (key=2) element (key already in cache)")
 print("Expected value: 2")
 print("Actual value: " + format(our_cache.get(2)))
-print("Expected Linked List: [Head: (1,1)->(2,2) :Tail]")
+print("Expected Linked List: [Head: (None,None)->(1,1)->(2,2) :Tail]")
 print("Actual Linked List:", end=" ")
 our_cache.print_cache()
 
@@ -183,13 +191,15 @@ print("\n-----------------------------------------------------------------------
 print("Test 6: Get cache with (key=5) element (key NOT in cache)")
 print("Expected value: -1")
 print("Output value: " + format(our_cache.get(5)))
-print("Expected Linked List: [Head: (1,1)->(2,2) :Tail]")
+print("Expected Linked List: [Head: (None,None)->(1,1)->(2,2) :Tail]")
 print("Actual Linked List:", end=" ")
 our_cache.print_cache()
 
 print("\n-----------------------------------------------------------------------\n")
 
 print("Test 7: Set cache full with key and value from 1 to 5")
+our_cache.set(1, 1)
+our_cache.set(2, 2)
 our_cache.set(3, 3)
 our_cache.set(4, 4)
 our_cache.set(5, 5)

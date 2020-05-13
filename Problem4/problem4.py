@@ -38,16 +38,24 @@ class Group(object):
         return self.name
 
 def is_user_in_group(user_input,group_input):
+    
+    # Check if users provide valid input and return False if not
     if user_input == "" or user_input == None or group_input == None \
         or not isinstance(user_input,str) or not isinstance(group_input,Group):
         print("Usage: is_user_in_group(user_input as str type, group_input as Group type))")
         return False
-
+    
+    # Create stack and push the group_input to the stack
     stack = Stack()
     stack.push(group_input)
+
+    # Keep checking each group in the stack until the stack is empty
+    # Worst-case time and space complexity is O(n) where n is the total
+    # number of groups inside group_input
     while not stack.is_empty():
         current_group = stack.pop()
         for user in current_group.get_users():
+            # If user found, return True
             if user == user_input:
                 return True
         for group in current_group.get_groups():
@@ -68,4 +76,39 @@ child.add_group(sub_child)
 parent.add_group(child)
 parent.add_group(child2)
 
+# Testing
+print()
 print(is_user_in_group("sub_child_user",child2))
+
+print("Unit Test Start!")
+print("-----------------------------------------------------------------------\n")
+
+print("Test 1: Print invalid input")
+print("Expected Output: Usage: is_user_in_group(user_input as str type, group_input as Group type))")
+print("False")
+print("Actual Output:", end=" ")
+print(is_user_in_group("sub_child_user", "parent"))
+
+print("\n-----------------------------------------------------------------------\n")
+
+print("Test 2: Another invalid input")
+print("Expected Output: Usage: is_user_in_group(user_input as str type, group_input as Group type))")
+print("False")
+print("Actual Output:", end=" ")
+print(is_user_in_group("", parent))
+
+print("\n-----------------------------------------------------------------------\n")
+
+print("Test 3: Normal usage (sub_child_user is within parent)")
+print("Expected Output: True")
+print("Actual Output:", end=" ")
+print(is_user_in_group("sub_child_user", parent))
+
+print("\n-----------------------------------------------------------------------\n")
+
+print("Test 4: Normal usage (sub_child_user is not within child2)")
+print("Expected Output: False")
+print("Actual Output:", end=" ")
+print(is_user_in_group("sub_child_user", child2))
+
+print("\n-----------------------------------------------------------------------\n")

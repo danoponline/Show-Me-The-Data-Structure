@@ -77,9 +77,6 @@ parent.add_group(child)
 parent.add_group(child2)
 
 # Testing
-print()
-print(is_user_in_group("sub_child_user",child2))
-
 print("Unit Test Start!")
 print("-----------------------------------------------------------------------\n")
 

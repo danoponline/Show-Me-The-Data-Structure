@@ -18,6 +18,10 @@ class Stack:
         return self.arr.pop()
 
 def find_files(suffix, path):
+    if path is None or path == "" or not isinstance(path,str):
+        print("Path has to be string type and cannot be None or empty")
+        return
+
     stack = Stack()
     stack.push(path)
     list_of_paths_with_suffix = []
@@ -49,3 +53,13 @@ def find_files(suffix, path):
 print(find_files(".c", "./testdir"))
 # Expected Output:
 # ['./testdir/t1.c', './testdir/subdir1/a.c', './testdir/subdir5/a.c', './testdir/subdir3/subsubdir1/b.c']
+print("--------------------------------------------------------------------")
+print(find_files(".c", ""))
+# Expected Outupt:
+# Path has to be string type and cannot be None or empty
+# None
+print("--------------------------------------------------------------------")
+print(find_files(".c", None))
+# Expected Outupt:
+# Path has to be string type and cannot be None or empty
+# None

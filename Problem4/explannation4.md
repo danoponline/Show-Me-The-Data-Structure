@@ -17,4 +17,5 @@ The group structure in this problem is similar to tree. Stack is used for this p
     * add subgroups within this group into the stack
 4. Return False if user is not found
 
+## Overall Complexity
 The overall worst-case time and space complexity is O(n) where n is the total number of groups. The while loop in the algorithm takes the longest time to complete.

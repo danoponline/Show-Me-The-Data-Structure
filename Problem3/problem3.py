@@ -2,6 +2,7 @@ import sys
 from queue import PriorityQueue
 from collections import deque
 
+# Use regular Queue for tree representation only
 class Queue:
     def __init__(self):
         self.q = deque()
@@ -22,8 +23,11 @@ class Node:
     def __init__(self, value, frequency):
         self.value = value
         self.frequency = frequency
+        self.visited = False
         self.left = None
         self.right = None
+        self.parent = None
+        self.bit = None
     
     def set_left(self, left):
         self.left = left
@@ -31,17 +35,35 @@ class Node:
     def set_right(self,right):
         self.right = right
 
+    def set_parent(self,node):
+        self.parent = node
+    
+    def set_visited(self):
+        self.visited = True
+    
+    def set_bit(self,bit):
+        self.bit = bit
+
     def get_left(self):
         return self.left
     
     def get_right(self):
         return self.right
+    
+    def get_parent(self):
+        return self.parent
+
+    def get_bit(self):
+        return self.bit
 
     def has_left(self):
         return self.left is not None
 
     def has_right(self):
         return self.right is not None
+
+    def is_leaf(self):
+        return self.left is None and self.right is None
     
     def __eq__(self, other):
         return self.frequency == other.frequency
@@ -135,6 +157,8 @@ def generate_middle_node(q):
     middle_node = Node("middle", freq_left+freq_right)
     middle_node.set_left(node_left)
     middle_node.set_right(node_right)
+    node_left.set_parent(middle_node)
+    node_right.set_parent(middle_node)
     return middle_node
 
 # Help function to generate root nood for creating Huffman tree
@@ -154,6 +178,8 @@ def generate_root_node(q):
     else:
         root.set_left(middle_node2)
         root.set_right(middle_node1)
+    middle_node1.set_parent(root)
+    middle_node2.set_parent(root)
     return root
 
 # Help function to generate Huffman tree
@@ -201,34 +227,233 @@ def generate_huffman_tree(q):
         tree.set_root(root)
         return tree
 
-# main function to perform Huffman encoding
+# Help function to generate encoding dictionary from Huffman tree
+# Average time complexity is O(n log n)
+# O(n) for outer recursion to go through all nodes
+# O(log n) for inner while loop to traverse back to root
+# in order to read all encoding bits
+# Average space complexity is O(n)
+def generate_encoding_dictionary(tree):
+    dictionary = {}
+    root = tree.get_root()
+    
+    # Corner case for root is the only leaf
+    if root.is_leaf():
+        dictionary[root.value] = str(0)
+        return dictionary
+    
+    # Traverse all the node in the tree. Set child bit to 0 or 1 
+    # for the left and right child, respectively
+    def traverse_tree(node):
+        
+        # Found left node
+        if node.has_left():
+            node.get_left().set_bit(0)
+            traverse_tree(node.get_left())
+        
+        # Found right node
+        if node.has_right():
+            node.get_right().set_bit(1)
+            traverse_tree(node.get_right())
+        
+        # This is a leaf node
+        if node.is_leaf():
+            leaf_node = node
+            key = node.value
+            s = ""
+            # Traverse back up the parents to generate encoding key
+            while node.get_bit() is not None:
+                s = str(node.get_bit()) + s
+                node = node.get_parent()
+            dictionary[key] = s
+            node = leaf_node
+            return dictionary
+        return dictionary
+
+    return traverse_tree(root)
+
+# Help function to generate decoding dictionary from Huffman tree
+# Average time complexity is O(n log n)
+# O(n) for outer recursion to go through all nodes
+# O(log n) for inner while loop to traverse back to root
+# in order to read all decoding bits
+# Average space complexity is O(n)
+def generate_decoding_dictionary(tree):
+    dictionary = {}
+    root = tree.get_root()
+    
+    # Corner case for root is the only leaf
+    if root.is_leaf():
+        dictionary["0"] = str(root.value)
+        return dictionary
+    
+    # Traverse all the node in the tree. Set child bit to 0 or 1 
+    # for the left and right child, respectively
+    def traverse_tree(node):
+        
+        # Found left node
+        if node.has_left():
+            node.get_left().set_bit(0)
+            traverse_tree(node.get_left())
+        
+        # Found right node
+        if node.has_right():
+            node.get_right().set_bit(1)
+            traverse_tree(node.get_right())
+        
+        # This is a leaf node
+        if node.is_leaf():
+            leaf_node = node
+            value = node.value
+            s = ""
+            # Traverse back up the parents to generate encoding key
+            while node.get_bit() is not None:
+                s = str(node.get_bit()) + s
+                node = node.get_parent()
+            dictionary[s] = value
+            node = leaf_node
+            return dictionary
+        return dictionary
+
+    return traverse_tree(root)
+
+# Main function to perform Huffman encoding
 # Average time complexity is O(n log n)
 # Average space complexity is O(n)
 def huffman_encoding(data):
+    if data is None or len(data) == 0 or not isinstance(data,str):
+        print("Invaid data")
+        return None, None
     dictionary = generate_dictionary(data)
     q = generate_priority_queue(dictionary)
     tree = generate_huffman_tree(q)
-    print(tree)
-    
+    dictionary = generate_encoding_dictionary(tree)
+    encoded_data = ""
+    for char in data:
+        encoded_data += dictionary[char]
+    return encoded_data, tree
 
+# Main function to perform Huffman decoding
+# Average time complexity is O(n log n)
+# Average space complexity is O(n)
 def huffman_decoding(data,tree):
-    pass
+    if data is None or len(data) == 0 or not isinstance(data,str):
+        print("Invaid data")
+        return None, None
+    dictionary = generate_decoding_dictionary(tree)
+    s = ""
+    decoded_data = ""
+    for string in data:
+        s += string
+        if s in dictionary:
+            decoded_data += dictionary[s]
+            s = ""
+    return decoded_data
 
-huffman_encoding("AAAAAABCDDDDDDD")
-# if __name__ == "__main__":
-#     codes = {}
+# Testing
+if __name__ == "__main__":
+    codes = {}
 
-#     a_great_sentence = "The bird is the word"
+    print("Test 1: Print a great sentence: The bird is the word")
+    a_great_sentence = "The bird is the word"
 
-#     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
-#     print ("The content of the data is: {}\n".format(a_great_sentence))
+    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
+    print ("The content of the data is: {}\n".format(a_great_sentence))
 
-#     encoded_data, tree = huffman_encoding(a_great_sentence)
+    encoded_data, tree = huffman_encoding(a_great_sentence)
 
-#     print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
-#     print ("The content of the encoded data is: {}\n".format(encoded_data))
+    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
+    print ("The content of the encoded data is: {}\n".format(encoded_data))
 
-#     decoded_data = huffman_decoding(encoded_data, tree)
+    decoded_data = huffman_decoding(encoded_data, tree)
 
-#     print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-#     print ("The content of the encoded data is: {}\n".format(decoded_data))
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
+    print ("The content of the encoded data is: {}\n".format(decoded_data))
+    
+    # Expected Output: 
+
+    # The size of the data is: 69
+
+    # The content of the data is: The bird is the word
+
+    # The size of the encoded data is: 36
+
+    # The content of the encoded data is: 1000111111100100001101110000101110110110100011111111001101010011100001
+
+    # The size of the decoded data is: 69
+
+    # The content of the encoded data is: The bird is the word
+
+    print("\n-----------------------------------------------------------------------\n")
+
+    print("Test 2: Print one character")
+    a_great_sentence = "A"
+
+    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
+    print ("The content of the data is: {}\n".format(a_great_sentence))
+
+    encoded_data, tree = huffman_encoding(a_great_sentence)
+
+    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
+    print ("The content of the encoded data is: {}\n".format(encoded_data))
+
+    decoded_data = huffman_decoding(encoded_data, tree)
+
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
+    print ("The content of the encoded data is: {}\n".format(decoded_data))
+    
+    # Expected Output:
+
+    # The size of the data is: 50
+
+    # The content of the data is: A
+
+    # The size of the encoded data is: 24
+
+    # The content of the encoded data is: 0
+
+    # The size of the decoded data is: 50
+
+    # The content of the encoded data is: A
+
+    print("\n-----------------------------------------------------------------------\n")
+
+    print("Test 3: Empty input")
+    a_great_sentence = ""
+    _, _ = huffman_encoding(a_great_sentence)
+
+    # Expected Output:
+    # Invalid data
+
+    print("\n-----------------------------------------------------------------------\n")
+
+    print("Test 4: Print another great sentence: I am soooooooooo good")
+    a_great_sentence = "I am soooooooooo good"
+
+    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
+    print ("The content of the data is: {}\n".format(a_great_sentence))
+
+    encoded_data, tree = huffman_encoding(a_great_sentence)
+
+    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
+    print ("The content of the encoded data is: {}\n".format(encoded_data))
+
+    decoded_data = huffman_decoding(encoded_data, tree)
+
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
+    print ("The content of the encoded data is: {}\n".format(decoded_data))
+
+    # Expected Output:
+
+    # The size of the data is: 70
+
+    # The content of the data is: I am soooooooooo good
+
+    # The size of the encoded data is: 32
+
+    # The content of the encoded data is: 1000011001101101000111111111111111111110110101111001
+
+    # The size of the decoded data is: 70
+
+    # The content of the encoded data is: I am soooooooooo good
+    print("\n-----------------------------------------------------------------------\n")

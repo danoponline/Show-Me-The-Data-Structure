@@ -38,6 +38,7 @@ def find_files(suffix, path):
         
         # Loop through all the stuff. If directory found, push directory to stack.
         # If file found, append file ending with suffix into list_of_paths_with_suffix
+        # Comment from mentor: use os.path.join to join the paths here
         for stuff in list_of_stuff:
             if os.path.isdir(path+ "/" + stuff):
                 stack.push(path + "/" + stuff)

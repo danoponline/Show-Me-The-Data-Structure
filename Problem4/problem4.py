@@ -37,6 +37,7 @@ class Group(object):
     def get_name(self):
         return self.name
 
+# Comment from mentor: Think about recursive solution as well
 def is_user_in_group(user_input,group_input):
     
     # Check if users provide valid input and return False if not

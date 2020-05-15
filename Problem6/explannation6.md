@@ -26,3 +26,4 @@ Linked lists are used as input and output for this problem. A dictionary is crea
 
 ## Overall Average Complexity:
 The overall time and space complexity is O(n) for both Union and Intersection.
+* Comment from mentor: Should be O(m+n) because there are 2 linked list

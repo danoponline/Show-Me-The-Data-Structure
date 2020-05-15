@@ -19,3 +19,4 @@ The group structure in this problem is similar to tree. Stack is used for this p
 
 ## Overall Complexity
 The overall worst-case time and space complexity is O(n) where n is the total number of groups. The while loop in the algorithm takes the longest time to complete.
+* Comment from mentor: Should be O(# of group * # of file in a group)

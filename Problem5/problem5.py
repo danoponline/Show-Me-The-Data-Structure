@@ -10,6 +10,7 @@ class Block:
       self.hash = self.calc_hash(self.data)
       self.next = None
 
+    # Comment from mentor: Should use time stamp for hash generation
     def calc_hash(self,data):
       sha = hashlib.sha256()
       hash_str = data.encode('utf-8')
@@ -24,6 +25,7 @@ class Block:
         s += "----------"
         return s
 
+# Comment from mentor: This class should be named BlockChain
 class LinkedList:
     def __init__(self):
         self.head = None
